@@ -11,18 +11,9 @@
         <div class="cart-th6">操作</div>
       </div>
       <div class="cart-body">
-        <ul
-          class="cart-list"
-          v-for="(cart) in cartInfoList"
-          :key="cart.id"
-        >
+        <ul class="cart-list" v-for="(cart) in cartInfoList" :key="cart.id">
           <li class="cart-list-con1">
-            <input
-              type="checkbox"
-              name="chk_list"
-              :checked="cart.isChecked == 1"
-              @change="updateChecked(cart, $event)"
-            />
+            <input type="checkbox" name="chk_list" :checked="cart.isChecked == 1" @change="updateChecked(cart, $event)"/>
           </li>
           <li class="cart-list-con2">
             <img :src="cart.imgUrl" />
@@ -32,26 +23,9 @@
             <span class="price">{{ cart.skuPrice }}.00</span>
           </li>
           <li class="cart-list-con5">
-            <a
-              href="javascript:void(0)"
-              class="mins"
-              @click="handler('minus', -1, cart)"
-              >-</a
-            >
-            <input
-              autocomplete="off"
-              type="text"
-              minnum="1"
-              class="itxt"
-              :value="cart.skuNum"
-              @change="handler('change', $event.target.value * 1, cart)"
-            />
-            <a
-              href="javascript:void(0)"
-              class="plus"
-              @click="handler('add', 1, cart)"
-              >+</a
-            >
+            <a href="javascript:void(0)" class="mins" @click="handler('minus', -1, cart)">-</a>
+            <input autocomplete="off" type="text" minnum="1" class="itxt" :value="cart.skuNum" @change="handler('change', $event.target.value * 1, cart)"/>
+            <a href="javascript:void(0)" class="plus" @click="handler('add', 1, cart)">+</a>
           </li>
           <li class="cart-list-con6">
             <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
@@ -116,7 +90,7 @@ export default {
     },
     isAllCheck() {
       //遍历数组里面原理，只要全部元素ischecked属性都为1===>真true
-      //只要有一个不是1======>假falseI
+      //只要有一个不是1======>假false
       return this.cartInfoList.every((item) => item.isChecked == 1);
     },
   },

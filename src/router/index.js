@@ -82,8 +82,8 @@ export default new VueRouter({
             }
         },
         {
-            path:"/addcartsuccess",
             name:'addcartsuccess',
+            path:"/addcartsuccess",
             component:AddCartSuccess,
             meta:{
                 show:true

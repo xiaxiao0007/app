@@ -52,4 +52,4 @@ export const reqAddOrUpdateShopCart = (skuId,skuNum)=>{
 }
 
 // 获取购物车列表的接口
-export const reqCartList = ()=>requests({url:'/cart/cartlist',method:'get'})
+export const reqCartList = ()=>requests({url:'/cart/cartList',method:'get'})

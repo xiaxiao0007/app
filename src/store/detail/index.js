@@ -3,7 +3,7 @@ import { reqAddOrUpdateShopCart, reqGoodInfo } from "@/api";
 import {getUUID} from '@/utils/uuid_token'
 const state ={
     goodInfo:{},
-    // 游客的临时身份
+    // 游客的临时身份,使用uuid模拟临时客户身份
     uuid_token:getUUID()
 };
 const mutations = {

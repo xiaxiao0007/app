@@ -17,7 +17,7 @@ export default new Vuex.Store({
         home:home,
         search:search,
         detail:detail,
-        shopcart
+        shopcart,
     }
 })
 
