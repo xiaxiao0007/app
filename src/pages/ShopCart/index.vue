@@ -132,9 +132,11 @@ export default {
           skuNum: disNum,
         });
         //再一次获取服务器最新的数据进行展示
-        this.getData();
+        setTimeout(()=>{return this.getData()},500)
+        // this.getData();
       } catch (error) {}
     }, 500),
+
     async deleteCartById(cart) {
       try {
         //如果删除成功再次发请求获取新的数据进行展示
@@ -144,10 +146,10 @@ export default {
         alert(error.message);
       }
     },
-    //修改某个产品的勾选状态
+
     //修改某个产品的勾选状态
     async updateChecked(cart, event) {
-      //带给服务器的参数isChecked，不是布尔值，应该是0|1
+      //event.target.checked的值为布尔值 带给服务器的参数isChecked，不是布尔值，应该是0|1
       try {
         //如果修改数据成功，再次获取服务器数据（购物车）
         let isChecked = event.target.checked ? "1" : "0";
@@ -161,6 +163,7 @@ export default {
         alert(error.message);
       }
     },
+    
     //删除全部选中的产品
     //这个回调函数咱门没办法收集到一些有用数据
     async deleteAllCheckedCart() {

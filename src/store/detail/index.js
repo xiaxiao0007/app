@@ -19,6 +19,7 @@ const actions = {
             context.commit('GOODINFO',result.data)
         }
     },
+    
     // 将产品添加到购物车中
     async addOrUpdateShopCart(context,{skuId, skuNum}){
         let result = await reqAddOrUpdateShopCart(skuId,skuNum)
