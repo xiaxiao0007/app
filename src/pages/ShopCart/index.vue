@@ -40,12 +40,7 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input
-          class="chooseAll"
-          type="checkbox"
-          :checked="isAllCheck && cartInfoList.length > 0"
-          @change="updateAllCartChecked"
-        />
+        <input class="chooseAll" type="checkbox" :checked="isAllCheck && cartInfoList.length > 0" @change="updateAllCartChecked"/>
         <span>全选</span>
       </div>
       <div class="option" @click="deleteAllCheckedCart">

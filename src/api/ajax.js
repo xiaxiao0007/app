@@ -23,6 +23,9 @@ requests.interceptors.request.use((config)=>{
         // 与后台商量好的
         config.headers.userTempId = store.state.detail.uuid_token
     }
+    if(store.state.user.token){
+        config.headers.token = store.state.user.token;
+    }
     // 进度条开始动
     nProgress.start();
     return config;

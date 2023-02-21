@@ -6,7 +6,7 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p v-if="true">
+          <p v-if="!userName">
             <span>请</span>
             <!-- 声明式导航 -->
             <router-link to="/login">登录</router-link>
@@ -14,7 +14,7 @@
           </p>
           <p v-else>
             <a>{{ userName }}</a>
-            <a @click="logOut">退出登录</a>
+            <a @click="logOut" class="register">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   name:'Header',
   // 数据的返回
@@ -84,7 +85,25 @@ export default {
           k:this.keyword.toUpperCase(),
         }
       }) */
-    }
+    },
+    // 退出登陆
+    logOut(){
+      //退出登录需要做的事情
+      //1:需要发请求，通知服务器退出登录【清除一些数据：token】
+      //2:清除项目当中的数据【userInfo、token】
+      try {
+        this.$store.dispatch('logout');
+        // 跳转到首页
+        this.$router.push('/home');
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+  },
+  computed:{
+    ...mapState({
+      userName: (state) => state.user.userInfo.name,
+    }),
   },
   mounted(){
     // 通过全局事件总线清楚关键字

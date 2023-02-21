@@ -3,14 +3,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 // 使用插件
 Vue.use(VueRouter);
-// 引入路由组件
-import Home from '@/pages/Home'
-import Login from '@/pages/Login'
-import Search from '@/pages/Search'
-import Register from '@/pages/Register'
-import Detail from '@/pages/Detail'
-import AddCartSuccess from '@/pages/AddCartSuccess'
-import ShopCart from '@/pages/ShopCart'
+
+import routers from "./routers"
 
 // 重写编程式路由的push和replace方法
 // 先把VueRouter原型对象的push,先保存一份
@@ -39,72 +33,68 @@ VueRouter.prototype.replace = function(location,resolve,reject){
     }
 }
 
-// 配置路由
-export default new VueRouter({
+import store from "@/store";
+
+// 创建一个路由器
+let router =  new VueRouter({
     // 配置路由
-    routes:[
-        {
-            path:"/home",
-            component:Home,
-            // 路由的元信息,在路由中添加其它信息
-            meta:{
-                show:true
-            }
-        },
-        {
-            path:"/login",
-            component:Login,
-            meta:{
-                show:false
-            }
-        },
-        {
-            name:'search',
-            path:"/search/:keyword?", // /:keyword这为占位符 在结尾后面加一个?,则param参数可传可不传
-            component:Search,
-            meta:{
-                show:true
-            }
-        },
-        {
-            path:"/register",
-            component:Register,
-            meta:{
-                show:false
-            }
-        },
-        {
-            name:'detail',
-            path:"/detail/:skuid", // 在路由进行跳转的时候需要进行参数的传递
-            component:Detail,
-            meta:{
-                show:true
-            }
-        },
-        {
-            name:'addcartsuccess',
-            path:"/addcartsuccess",
-            component:AddCartSuccess,
-            meta:{
-                show:true
-            }
-        },
-        {
-            path:"/shopcart",
-            component:ShopCart,
-            meta:{
-                show:true
-            }
-        },
-        // 重定向，在项目跑起来的时候，访问/，立马让他定向到首页home
-        {
-            path:"*",
-            redirect:'/home'
-        }
-    ],
+    routes:routers,
     // 路由的其它用处:滚动行为
     scrollBehavior(to, from, savedPosition){
         // 返回的这个y=0,代表滚动条在最上方
         return {y:0}
     }
 })
+// 全局守卫：前置守卫（在路由跳转之间进行判断）
+router.beforeEach(async (to, from, next) =>{
+    //获取仓库中的token-----可以确定用户是登录了
+    let token = store.state.user.token;
+    let name = store.state.user.userInfo.name;
+    //用户登录了
+    if (token) {
+        // console.log(this+'2')
+        //已经登录而且还想去登录------不行
+        if (to.path == "/login" || to.path == "/register") {
+            next("/home");
+        } else {
+            //已经登陆了,访问的是非登录与注册
+            //登录了且拥有用户信息放行
+            if (name) {
+                // console.log(this+'3')
+                next();
+            } else {
+                //登陆了且没有用户信息
+                //在路由跳转之前获取用户信息且放行
+                try {
+                    //获取用户信息
+                    await store.dispatch("getUserInfo");
+                    next();
+                } catch (error) {
+                    // 第一次启动会出现问题
+                    //token失效从新登录
+                    //清除token
+                    await store.dispatch("logout");
+                    // 回到登录页
+                    // 但如果您需要调用router实例中已经定义好的方法（如push和replace），则必须使用this来指代Router实例。
+                    router.push("/login");
+                }
+            }
+        }
+    } else {
+        //未登录：不能去交易相关、不能去支付相关【pay|paysuccess】、不能去个人中心
+        //未登录去上面这些路由-----登录
+        let toPath = to.path;
+        if (toPath.includes("/trade") || toPath.includes("/pay") || toPath.includes("/center")) {
+            //把未登录的时候向去而没有去成的信息，存储于地址栏中【路由】
+            next("/login?redirect=" + toPath);
+            // console.log(toPath);
+        } else {
+            //去的不是上面这些路由（home|search|shopCart）---放行
+            next();
+        }
+    }
+})
+
+// 暴露一个路由器
+export default router
+
